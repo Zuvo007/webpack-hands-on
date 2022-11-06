@@ -7,4 +7,3 @@ export function changeH1(text) {
 
 }
 
-if(module && module.hot) module.hot.accept()
