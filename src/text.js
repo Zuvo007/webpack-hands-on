@@ -1,5 +1,5 @@
 export function hello() {
-    document.write("hello from webpack!!!!!"); 
+    document.write("hello from webpack!!!!!!"); 
 }
 
 export function changeH1(text) {
