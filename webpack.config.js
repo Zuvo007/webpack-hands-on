@@ -10,6 +10,10 @@
      * [contenthash]
      */
 const path = require('path');
+const webpack = require('webpack');
+const HTMLWebpackPlugin = require('html-webpack-plugin'); // helps to create our html file dynamically (no need to write the script in the script tag)
+const HTMLWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
+
 
 module.exports = {
     /**
@@ -43,8 +47,8 @@ module.exports = {
    output: {
        path: path.resolve(__dirname,'build'),
       // filename: 'js/[name].build.js'
-      filename: 'js/main.js',
-      publicPath: '/assets/ ', //https://server.com/assets/js/1.js'
+      filename: 'js/main.[chunkhash].js',
+      publicPath: '/assets/', //https://server.com/assets/js/1.js'
       /** the build will be assigned to the format we want like on a var name 
        * "amd" with defined syntax
        * if you need everything (amd,var,commonjs) => use "umd" (universal module definition)
@@ -58,14 +62,37 @@ module.exports = {
    },
    /**
     * devServer => helped to use webpack-dev-server on a particular port 
-    * contentBase => file that you have created (not by webpack) 
+    * contentBase/static => file that you have created (not by webpack) 
     * but still you want to serve
+    * writeToDisk => it helps to store the build file in disk
+    * (as default webpack dev server build it and store it in ram as it's more faster)
+    * but sometimes we need to check what's there in the build file via dev server
+    * so writeToDisk will be the go to way.
+    * hot reloading => without loading the entire page it does changes where it actually change needed
     */
    devServer: {
        port: 1234,
+       hot: true,
        static: {
-        directory: path.join(__dirname, "dist")
+        directory: path.join(__dirname, "dist"),
       },
-   }
+      devMiddleware: {
+       // writeToDisk: true,
+      // writeToDisk: false
+      },
+   },
+   plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+    new HTMLWebpackPlugin({
+      title: "Hello From Webpack",
+      template: './dist/template.html',
+      filename: '../dist/index.html',
+      minify: {
+        collapseWhitespace: true
+        },
+      alwaysWriteToDisk: true
+        }),
+    new HTMLWebpackHarddiskPlugin()
+  ]
 
 }
